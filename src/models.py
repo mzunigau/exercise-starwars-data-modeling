@@ -1,6 +1,7 @@
 import os
 import sys
 from enum import Enum
+import enum
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -8,6 +9,11 @@ from sqlalchemy import create_engine
 from eralchemy import render_er
 
 Base = declarative_base()
+
+class MyEnum(enum.Enum):
+    one = 1
+    two = 2
+    three = 3
 
 class User(Base):
     __tablename__ = 'user'    
@@ -32,7 +38,7 @@ class Post(Base):
 class Media(Base):
     __tablename__ = 'media'
     id = Column(Integer, primary_key = True)
-    type_media = Column(String(250))
+    type_media = Column('race', Enum('asian','mideastern','black','nativeamerican','indian','pacific','hispanic','white','other'))
     url = Column(String(250))
     post_id = Column( Integer , ForeignKey('post.id'))
     post = relationship(Post)
