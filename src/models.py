@@ -1,5 +1,6 @@
 import os
 import sys
+from enum import Enum
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -20,30 +21,30 @@ class Follower(Base):
     __tablename__ = 'follower'
     user_to_id = Column(Integer,ForeignKey('user.id'), primary_key=True)
     user_from_id = Column(Integer, ForeignKey('user.id'), primary_key= True)
+    user = relationship(User)
 
 class Post(Base):
     __tablename__ = 'post'
     id = Column(Integer, primary_key = True)
     user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
 class Media(Base):
-    id = Column(Integer, primary_key= True)
-    type_media = Column(Enum)
+    __tablename__ = 'media'
+    id = Column(Integer, primary_key = True)
+    type_media = Column(String(250))
     url = Column(String(250))
     post_id = Column( Integer , ForeignKey('post.id'))
+    post = relationship(Post)
 
-class
-
-#class Address(Base):
-   # __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    
-
- 
-    #post_code = Column(String(250), nullable=False)
-    #person_id = Column(Integer, ForeignKey('person.id'))
-    #person = relationship(Person)
+class Comment(Base):
+    __tablename__ = 'comment'
+    id = Column(Integer, primary_key = True)
+    comment_text = Column(String(250), nullable= False)
+    author_id = Column(Integer, ForeignKey('user.id'))
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
+    user = relationship(User)
 
     def to_dict(self):
         return {}
