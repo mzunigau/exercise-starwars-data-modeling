@@ -1,7 +1,5 @@
 import os
 import sys
-from enum import Enum
-import enum
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -10,10 +8,7 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class MyEnum(enum.Enum):
-    one = 1
-    two = 2
-    three = 3
+
 
 class User(Base):
     __tablename__ = 'user'    
@@ -22,35 +17,32 @@ class User(Base):
     firstname = Column(String(250), nullable=False)
     lastname = Column(String(250), nullable=False)
     email = Column(String(250), unique = True)
+    password = Column(String(250), nullable = False)
 
-class Follower(Base):
-    __tablename__ = 'follower'
-    user_to_id = Column(Integer,ForeignKey('user.id'), primary_key=True)
-    user_from_id = Column(Integer, ForeignKey('user.id'), primary_key= True)
+class Planet(Base):
+    __tablename__ = 'planet'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(250), nullable = False)
+
+class Character(Base):
+    __tablename__ = 'character'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(250), nullable = False)
+
+class Favorites_Planets(Base):
+    __tablename__ = 'favorites_planets'     
+    user_id = Column( Integer , ForeignKey('user.id'), primary_key = True)
+    planet_id = Column( Integer , ForeignKey('planet.id'), primary_key = True)
+    planet = relationship(Planet)
+    user = relationship(User)
+    
+class Favorites_Characters(Base):
+    __tablename__ = 'favorites_characters'     
+    user_id = Column( Integer , ForeignKey('user.id'), primary_key = True)
+    character_id = Column( Integer , ForeignKey('character.id'), primary_key = True)
+    character = relationship(Character)
     user = relationship(User)
 
-class Post(Base):
-    __tablename__ = 'post'
-    id = Column(Integer, primary_key = True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
-
-class Media(Base):
-    __tablename__ = 'media'
-    id = Column(Integer, primary_key = True)
-    type_media = Column('race', Enum('asian','mideastern','black','nativeamerican','indian','pacific','hispanic','white','other'))
-    url = Column(String(250))
-    post_id = Column( Integer , ForeignKey('post.id'))
-    post = relationship(Post)
-
-class Comment(Base):
-    __tablename__ = 'comment'
-    id = Column(Integer, primary_key = True)
-    comment_text = Column(String(250), nullable= False)
-    author_id = Column(Integer, ForeignKey('user.id'))
-    post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
-    user = relationship(User)
 
     def to_dict(self):
         return {}
